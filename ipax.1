@@ -1,0 +1,88 @@
+.\"
+.TH IPAX 1 "2021-08-25" "Version 0.1" "IPAX"
+.
+.SH NAME
+ipax \- Markdown preprocessor
+.SH SYNOPSIS
+.B ipax
+.RB [ -h ]
+.RB [ -s
+.IR START ]
+.RB [ -e
+.IR END ]
+.RB [ -x | -n ]
+.RI [ file ]
+.
+.SH DESCRIPTION
+Preprocess a Markdown file,
+replacing any doubly-parenthesized IPA sequences
+with comma-separated, reasonable names.
+For example, the string
+.B ((tako))
+might be replaced by
+.BR "(Begin IPA) T, A, K, O (End IPA)" .
+.
+.SH OPTIONS
+.TP
+.B \-h
+Display a help message and exit.
+.
+.TP
+.B \-n
+Just strip the double-parens, nothing more.
+.
+.TP
+.BI \-s " START"
+Denote the beginning of an IPA block by
+.IR START .
+The default is the string
+.RB "\(lq" "(Begin IPA) " "\(rq."
+.
+.TP
+.BI \-e " END"
+Denote the end of an IPA block by
+.IR END .
+The default is the string
+.RB "\(lq" " (End IPA)" "\(rq."
+.
+.TP
+.B \-x
+Use standard phonetic descriptions instead of names.
+.
+.SH "EXIT STATUS"
+.TP
+.B 0
+Successful program execution.
+.TP
+.B ">0"
+An error occurred.
+.
+.SH ENVIRONMENT
+None.
+.
+.SH FILES
+None.
+.
+.SH BUGS
+Many IPA symbols are not yet supported.
+.PP
+No effort is taken to avoid replacement in URLs or code blocks.
+.
+.SH EXAMPLES
+$ printf \[dq]there is a ((fi)).\(rsn\[dq] | ipax -s '<' -e '>'
+.RS 0
+.RE
+there is a <F, I>.
+.PP
+$ printf \[dq]the ((g\(rsu0251\(rsu014b)) is ringing.\[dq] | ipax
+.RS 0
+.RE
+the (Begin IPA) G, alpha, engma (End IPA) is ringing.
+.PP
+$ printf \[dq]the ((tako)) was delicious.\[dq] | ipax -n
+.RS 0
+.RE
+the tako was delicious.
+.
+.SH "SEE ALSO"
+.BR markdown (1)

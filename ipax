@@ -1,0 +1,286 @@
+#!/usr/bin/env python3
+
+import argparse
+import sys
+
+start_marker = "(Begin IPA) "
+end_marker   = " (End IPA)"
+use_full_description = False
+strip_only = False
+
+def parse(s):
+    """Given a string, replace ((IPA)) as specified"""
+    q=q0
+    a=""
+    for c in s:
+        x, q = q(c)
+        a += x
+    return a
+
+# The IPA symbols and their potential replacements:
+
+basic = {"a": "low central unrounded vowel",
+         "b": "voiced bilabial central oral stop",
+         "c": "voiceless palatal central oral stop",
+         "d": "voiced alveolar central oral stop",
+         "e": "tense mid front unrounded vowel",
+         "f": "voiceless labiodental central oral fricative",
+         "g": "voiced velar central oral stop",
+         "h": "voiceless glottal central oral fricative",
+         "i": "tense high front unrounded vowel",
+         "j": "voiced palatal central oral approximant",
+         "k": "voiceless velar central oral stop",
+         "l": "voiced alveolar lateral oral approximant",
+         "m": "voiced bilabial central nasal stop",
+         "n": "voiced alveolar central nasal stop",
+         "o": "tense mid back rounded vowel",
+         "p": "voiceless bilabial central oral stop",
+         "q": "voiceless uvular central oral stop",
+         "r": "voiced alveolar central oral trill",
+         "s": "voiceless alveolar central oral fricative",
+         "t": "voiceless alveolar central oral stop",
+         "u": "tense high back rounded vowel",
+         "v": "voiced labiodental central oral fricative",
+         "w": "voiced labiovelar central oral approximant",
+         "x": "voiceless velar central oral fricative",
+         "y": "tense high front rounded vowel",
+         "z": "voiced alveolar central oral fricative"
+         }
+
+other = {"ɑ": ("alpha",
+               "low back unrounded vowel"),
+         "ɒ": ("turned alpha",
+               "low back rounded vowel"),
+         "ʌ": ("wedge",
+               "stressed mid central unrounded vowel"),
+         "æ": ("ligature of A and E",
+               "low front unrounded vowel"),
+         "ʙ": ("small capital B",
+               "voiced bilabial central oral trill"),
+         "β": ("beta",
+               "voiced bilabial central oral fricative"),
+         "ç": ("C with cedilla",
+               "voiceless palatal central oral fricative"),
+         "ɖ": ("D with tail",
+               "voiced retroflex central oral stop"),
+         "ð": ("eth",
+               "voiced interdental central oral fricative"),
+         "ə": ("schwa",
+               "mid central unrounded vowel"),
+         "ɚ": ("schwar",
+               "R-colored mid central unrounded vowel"),
+         "ɛ": ("epsilon",
+               "lax mid front unrounded vowel"),
+         "ɝ": ("reversed epsilon with hook",
+               "stressed R-colored mid central unrounded vowel"),
+         "ɸ": ("phi",
+               "voiceless bilabial central oral fricative"),
+         "ɢ": ("small capital G",
+               "voiced uvular central oral stop"),
+         "ɣ": ("gamma",
+               "voiced velar central oral fricative"),
+         "ɤ": ("baby gamma",
+               "tense mid back unrounded vowel"),
+         "ʰ": ("superscript H",
+               "aspiration mark"),
+         "ħ": ("H with stroke",
+               "voiceless pharyngeal central oral fricative"),
+         "ɦ": ("hook-top H",
+               "voiced glottal central oral fricative"),
+         "ɪ": ("small capital I",
+               "lax high front unrounded vowel"),
+         "ɨ": ("barred I",
+               "high central unrounded vowel"),
+         "ɟ": ("dotless J with stroke",
+               "voiced palatal central oral stop"),
+         "ʝ": ("J with crossed tail",
+               "voiced palatal central oral fricative"),
+         "ɬ": ("L with belt",
+               "voiceless alveolar lateral oral fricative"),
+         "ʟ": ("small capital L",
+               "voiced velar lateral oral approximant"),
+         "ɫ": ("L with middle tilde",
+               "velarized voiced alveolar lateral oral approximant"),
+         "ɭ": ("L with tail",
+               "voiced retroflex lateral oral approximant"),
+         "ɮ": ("lezh",
+               "voiced alveolar lateral oral fricative"),
+         "ɱ": ("M with hook",
+               "voiced labiodental central nasal stop"),
+         "ɯ": ("turned M",
+               "tense high back unrounded vowel"),
+         "ɰ": ("turned M with long leg",
+               "voiced velar central oral approximant"),
+         "ɴ": ("small capital N",
+               "voiced uvular central nasal stop"),
+         "ɳ": ("N with rightward hook",
+               "voiced retroflex central nasal stop"),
+         "ɲ": ("N with hook on left",
+               "voiced palatal central nasal stop"),
+         "ŋ": ("engma",
+               "voiced velar central nasal stop"),
+         "ɔ": ("open o",
+               "lax mid back rounded vowel"),
+         "ø": ("slashed O",
+               "tense mid front rounded vowel"),
+         "ɶ": ("small capital ligature of O and E",
+               "low central rounded vowel"),
+         "œ": ("ligature of O and E",
+               "lax mid front rounded vowel"),
+         "ʔ": ("glottal stop",
+               "voiceless glottal central oral stop"),
+         "ʕ": ("reversed glottal stop",
+               "voiced pharyngeal central oral fricative"),
+         "ʀ": ("small capital R",
+               "voiced uvular central oral trill"),
+         "ᴚ": ("turned small capital R",
+               "voiced uvular central oral fricative"),
+         "ɹ": ("turned R",
+               "voiced alveolar central oral approximant"),
+         "ɽ": ("R with tail",
+               "voiced retroflex central oral tap"),
+         "ɻ": ("turned R with tail",
+               "voiced retroflex central oral approximant"),
+         "ɾ": ("fishhook",
+               "voiced alveolar central oral tap"),
+         "ʃ": ("esh",
+               "voiceless palatoalveolar central oral fricative"),
+         "ʂ": ("S with hook",
+               "voiceless retroflex central oral fricative"),
+         "ʈ": ("T with tail",
+               "voiceless retroflex central oral stop"),
+         "ʊ": ("upsilon",
+               "lax high back rounded vowel"),
+         "ʉ": ("barred U",
+               "high central rounded vowel"),
+         "θ": ("theta",
+               "voiceless interdental central oral fricative"),
+         "ʋ": ("V with hook",
+               "voiced labiodental central oral approximant"),
+         "ⱱ": ("V with right hook",
+               "voiced labiodental central oral tap"),
+         "ʷ": ("superscript W",
+               "labialization mark"),
+         "χ": ("chi",
+               "voiceless uvular central oral fricative"),
+         "ʒ": ("ezh",
+               "voiced palatoalveolar central oral fricative"),
+         "ʏ": ("small capital Y",
+               "lax high front rounded vowel"),
+         "ʎ": ("turned Y",
+               "voiced palatal lateral oral approximant"),
+         "ʐ": ("Z with hook",
+               "voiced retroflex central oral fricative"),
+         "ˈ": ("primary stress mark",
+               "primary stress mark"),
+         "ˌ": ("secondary stress mark",
+               "secondary stress mark"),
+         "ː": ("long mark",
+               "long mark"),
+         ".": ("syllable boundary",
+               "syllable boundary")
+         }
+
+# What follows is an implementation of this transducer:
+#
+#    _____________________ :,A___________________
+#   /                   _______):_______         \
+#  /                   /                \         \
+# (0) -(:-> (1) -(-> (2) -X-> (3) -):-> (4) -):-> (5)
+# / \\_X:(X__/                / \\_X:)X__/
+# \A/                         \ /
+#                           X:", X"
+#
+# where A is any symbol as-is,
+# and X is either an IPA symbol replaced appropriately
+# or any other symbol left unchanged
+# a marker may be printed when entering state 2 or state 5
+
+def q0(c):
+    if '(' == c:
+        return ("", q1)
+    return (c, q0)
+
+def q1(c):
+    if '(' == c:
+        return (start_marker, q2)
+    return ('('+c, q0)
+
+def q2(c):
+    if ')' == c:
+        return ("", q4)
+    if strip_only:
+        return (c, q3)
+    if c in basic:
+        if use_full_description:
+            return (basic[c], q3)
+        return (c.upper(), q3)
+    if c in other:
+        if use_full_description:
+            return (other[c][1], q3)
+        return (other[c][0], q3)
+    return (c, q3)
+
+def q3(c):
+    if ')' == c:
+        return ("", q4)
+    x, q = q2(c)
+    if strip_only:
+        return (x, q)
+    return (", " + x, q)
+
+def q4(c):
+    if ')' == c:
+        return (end_marker, q5)
+    x, q = q3(c)
+    return (")" + x, q)
+
+def q5(c):
+    return (c, q0)
+
+# and finally, act appropriately if invoked as an executable
+
+if '__main__' == __name__:
+    parser = argparse.ArgumentParser(description="Replace ((IPA))",
+                                     add_help=False)
+    parser.add_argument('-h',
+                        action='help',
+                        help='show this help message and exit')
+    parser.add_argument('-s',
+                        dest='start_marker',
+                        default=start_marker,
+                        type=str,
+                        help='mark start, default: "'+start_marker+'"')
+    parser.add_argument('-e',
+                        dest='end_marker',
+                        default=end_marker,
+                        type=str,
+                        help='mark end, default: "'+end_marker+'"')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-x',
+                       dest='use_full_description',
+                       action='store_true',
+                       default=False,
+                       help='use extended descriptions')
+    group.add_argument('-n',
+                       dest='strip_only',
+                       action='store_true',
+                       default=False,
+                       help='only strip double-parens')
+    parser.add_argument('file',
+                        nargs='?',
+                        type=str,
+                        help='file to read from, default: stdin')
+    args = parser.parse_args()
+    start_marker = args.start_marker
+    end_marker = args.end_marker
+    use_full_description = args.use_full_description
+    strip_only = args.strip_only
+    infile = sys.stdin
+    if strip_only:
+        start_marker = ''
+        end_marker = ''
+    if args.file and (args.file != '-'):
+        infile=open(args.file, "r")
+    print(parse(infile.read()),end="")
+    infile.close()
