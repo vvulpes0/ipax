@@ -178,7 +178,10 @@ other = {"ɑ": ("alpha",
          "ː": ("long mark",
                "long mark"),
          ".": ("syllable boundary",
-               "syllable boundary")
+               "syllable boundary"),
+         "͡": ("tie bar",
+              "tie bar")
+
          }
 
 # What follows is an implementation of this transducer:
