@@ -12,6 +12,12 @@ def parse(s):
     """Given a string, replace ((IPA)) as specified"""
     q=q0
     a=""
+    # We'll compose two FSTs:
+    # * one to (maybe) swap diacritcs, and
+    # * one to spell out the IPA
+    if not strip_only:
+        s = swap_diacritics(s)
+    # run the transducer
     for c in s:
         x, q = q(c)
         a += x
@@ -53,7 +59,7 @@ other = {"ɑ": ("alpha",
                "low back rounded vowel"),
          "ʌ": ("wedge",
                "stressed mid central unrounded vowel"),
-         "æ": ("ligature of A and E",
+         "æ": ("ash",
                "low front unrounded vowel"),
          "ʙ": ("small capital B",
                "voiced bilabial central oral trill"),
@@ -183,6 +189,8 @@ other = {"ɑ": ("alpha",
               "tie bar")
 
          }
+diacritics =  {"̃": ("nasalized", "nasalized")
+              }
 
 # What follows is an implementation of this transducer:
 #
@@ -190,11 +198,14 @@ other = {"ɑ": ("alpha",
 #   /                   _______):_______         \
 #  /                   /                \         \
 # (0) -(:-> (1) -(-> (2) -X-> (3) -):-> (4) -):-> (5)
-# / \\_X:(X__/                / \\_X:)X__/
-# \A/                         \ /
-#                           X:", X"
+# / \\_X:(X__/ +---- X:" X" -+/ \\_X:)X__/
+# \A/        (6)- D:", D" -+  \ /
+#            / \            X:", X"
+#            \ /
+#           "D: " D"
 #
 # where A is any symbol as-is,
+# D is any combining diacritic replaced appropriately,
 # and X is either an IPA symbol replaced appropriately
 # or any other symbol left unchanged
 # a marker may be printed when entering state 2 or state 5
@@ -222,6 +233,10 @@ def q2(c):
         if use_full_description:
             return (other[c][1], q3)
         return (other[c][0], q3)
+    if c in diacritics:
+        if use_full_description:
+            return (diacritics[c][1], q6)
+        return (diacritics[c][0], q6)
     return (c, q3)
 
 def q3(c):
@@ -240,6 +255,31 @@ def q4(c):
 
 def q5(c):
     return (c, q0)
+
+def q6(c):
+    if c in diacritics:
+        if strip_only:
+            return (c, q6)
+        if use_full:
+            return (" "+diacritics[c][1], q6)
+        return (" "+diacritics[c][0], q6)
+    if strip_only:
+        return (c, q3)
+    a, q = q2(c)
+    return (" " + a, q)
+
+def swap_diacritics(s):
+    """Migrate diacritcs before their attachment points"""
+    a = ""
+    t = ""
+    for i in range(len(s)):
+        if s[i] in diacritics:
+            a += s[i] + t
+            t = ""
+            continue
+        a += t
+        t = s[i]
+    return a + t
 
 # and finally, act appropriately if invoked as an executable
 
