@@ -2,6 +2,7 @@
 
 import argparse
 import sys
+import unicodedata
 
 start_marker = "(Begin IPA) "
 end_marker   = " (End IPA)"
@@ -10,6 +11,7 @@ strip_only = False
 
 def parse(s):
     """Given a string, replace ((IPA)) as specified"""
+    s=unicodedata.normalize('NFKD', s)
     q=q0
     a=""
     # We'll compose two FSTs:
@@ -189,7 +191,10 @@ other = {"ɑ": ("alpha",
               "tie bar")
 
          }
-diacritics =  {"̃": ("nasalized", "nasalized")
+diacritics =  {"̃": ("nasalized", "nasalized"),
+               "̪": ("dental", "dental"),
+               "̝": ("raised", "raised"),
+               "̞": ("lowered", "lowered")
               }
 
 # What follows is an implementation of this transducer:
@@ -260,7 +265,7 @@ def q6(c):
     if c in diacritics:
         if strip_only:
             return (c, q6)
-        if use_full:
+        if use_full_description:
             return (" "+diacritics[c][1], q6)
         return (" "+diacritics[c][0], q6)
     if strip_only:
@@ -274,8 +279,7 @@ def swap_diacritics(s):
     t = ""
     for i in range(len(s)):
         if s[i] in diacritics:
-            a += s[i] + t
-            t = ""
+            a += s[i]
             continue
         a += t
         t = s[i]
