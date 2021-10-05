@@ -194,7 +194,8 @@ other = {"ɑ": ("alpha",
 diacritics =  {"̃": ("nasalized", "nasalized"),
                "̪": ("dental", "dental"),
                "̝": ("raised", "raised"),
-               "̞": ("lowered", "lowered")
+               "̞": ("lowered", "lowered"),
+               "́": ("acute accented", "acute accented"),
               }
 
 # What follows is an implementation of this transducer:
