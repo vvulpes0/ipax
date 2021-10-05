@@ -194,7 +194,9 @@ other = {"ɑ": ("alpha",
 diacritics =  {"̃": ("nasalized", "nasalized"),
                "̪": ("dental", "dental"),
                "̝": ("raised", "raised"),
-               "̞": ("lowered", "lowered")
+               "̞": ("lowered", "lowered"),
+               "ʰ": ("asiprated", "aspirated"),
+               "ʷ": ("labialized", "labialized")
               }
 
 following_diacritic = {"̃": ("nasalized",
