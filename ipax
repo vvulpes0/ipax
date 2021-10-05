@@ -195,8 +195,15 @@ diacritics =  {"̃": ("nasalized", "nasalized"),
                "̪": ("dental", "dental"),
                "̝": ("raised", "raised"),
                "̞": ("lowered", "lowered"),
-               "́": ("acute accented", "acute accented"),
+               "ʰ": ("asiprated", "aspirated"),
+               "ʷ": ("labialized", "labialized"),
+               "́": ("acute accented", "acute accented")
               }
+
+following_diacritic = {"̃": ("nasalized",
+                            "nasalized")
+}
+
 
 # What follows is an implementation of this transducer:
 #
