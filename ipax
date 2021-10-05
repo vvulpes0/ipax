@@ -53,7 +53,7 @@ other = {"ɑ": ("alpha",
                "low back rounded vowel"),
          "ʌ": ("wedge",
                "stressed mid central unrounded vowel"),
-         "æ": ("ligature of A and E",
+         "æ": ("ash",
                "low front unrounded vowel"),
          "ʙ": ("small capital B",
                "voiced bilabial central oral trill"),
@@ -183,6 +183,11 @@ other = {"ɑ": ("alpha",
               "tie bar")
 
          }
+
+following_diacritic = {"̃": ("nasalized",
+                            "nasalized")
+}
+
 
 # What follows is an implementation of this transducer:
 #
