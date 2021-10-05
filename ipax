@@ -196,7 +196,8 @@ diacritics =  {"̃": ("nasalized", "nasalized"),
                "̝": ("raised", "raised"),
                "̞": ("lowered", "lowered"),
                "ʰ": ("asiprated", "aspirated"),
-               "ʷ": ("labialized", "labialized")
+               "ʷ": ("labialized", "labialized"),
+               "́": ("acute accented", "acute accented")
               }
 
 following_diacritic = {"̃": ("nasalized",
