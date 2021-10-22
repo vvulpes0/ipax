@@ -202,10 +202,6 @@ diacritics =  {"̃": ("nasalized", "nasalized"),
                "́": ("acute accented", "acute accented")
               }
 
-following_diacritic = {"̃": ("nasalized",
-                            "nasalized")
-}
-
 
 # What follows is an implementation of this transducer:
 #
