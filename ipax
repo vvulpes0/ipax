@@ -59,6 +59,8 @@ other = {"ɑ": ("alpha",
                "low back unrounded vowel"),
          "ɒ": ("turned alpha",
                "low back rounded vowel"),
+         "ɐ": ("turned A",
+               "low center unrounded vowel"),
          "ʌ": ("wedge",
                "stressed mid central unrounded vowel"),
          "æ": ("ash",
@@ -141,7 +143,7 @@ other = {"ɑ": ("alpha",
                "voiced pharyngeal central oral fricative"),
          "ʀ": ("small capital R",
                "voiced uvular central oral trill"),
-         "ᴚ": ("turned small capital R",
+         "ʁ": ("turned capital R",
                "voiced uvular central oral fricative"),
          "ɹ": ("turned R",
                "voiced alveolar central oral approximant"),
@@ -199,6 +201,7 @@ diacritics =  {"̃": ("nasalized", "nasalized"),
                "ʷ": ("labialized", "labialized"),
                "́": ("acute accented", "acute accented")
               }
+
 
 # What follows is an implementation of this transducer:
 #
