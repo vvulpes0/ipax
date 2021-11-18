@@ -199,8 +199,12 @@ diacritics =  {"̃": ("nasalized", "nasalized"),
                "̞": ("lowered", "lowered"),
                "ʰ": ("asiprated", "aspirated"),
                "ʷ": ("labialized", "labialized"),
-               "́": ("acute accented", "acute accented")
-              }
+               "́": ("acute accented", "acute accented"),
+               "̀": ("grave accented", "graveaccented"),
+               "̂": ("circumflex accented", "circumflex accented"),
+               "̌": ("caron accented", "caron accented"),
+               "̄": ("macron accented", "macron accented")
+}
 
 
 # What follows is an implementation of this transducer:
