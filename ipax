@@ -190,8 +190,12 @@ other = {"ɑ": ("alpha",
          ".": ("syllable boundary",
                "syllable boundary"),
          "͡": ("tie bar",
-              "tie bar")
-
+              "tie bar"),
+         "́": ("acute", "acute"),
+         "̀": ("grave", "grave"),
+         "̂": ("circumflex", "circumflex"),
+         "̌": ("caron", "caron"),
+         "̄": ("macron", "macron")
          }
 diacritics =  {"̃": ("nasalized", "nasalized"),
                "̪": ("dental", "dental"),
@@ -199,12 +203,8 @@ diacritics =  {"̃": ("nasalized", "nasalized"),
                "̞": ("lowered", "lowered"),
                "ʰ": ("asiprated", "aspirated"),
                "ʷ": ("labialized", "labialized"),
-               "́": ("acute accented", "acute accented"),
-               "̀": ("grave accented", "graveaccented"),
-               "̂": ("circumflex accented", "circumflex accented"),
-               "̌": ("caron accented", "caron accented"),
-               "̄": ("macron accented", "macron accented")
 }
+postdiacritics = ["́","̀","̂","̌","̄"]
 
 
 # What follows is an implementation of this transducer:
@@ -260,6 +260,8 @@ def q3(c):
     x, q = q2(c)
     if strip_only:
         return (x, q)
+    if (c in postdiacritics):
+        return (" " + x, q)
     return (", " + x, q)
 
 def q4(c):
