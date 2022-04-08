@@ -11,7 +11,7 @@ strip_only = False
 
 def parse(s):
     """Given a string, replace ((IPA)) as specified"""
-    s=unicodedata.normalize('NFKD', s)
+    s=unicodedata.normalize('NFD', s)
     q=q0
     a=""
     # We'll compose two FSTs:
@@ -52,7 +52,7 @@ basic = {"a": "low central unrounded vowel",
          "w": "voiced labiovelar central oral approximant",
          "x": "voiceless velar central oral fricative",
          "y": "tense high front rounded vowel",
-         "z": "voiced alveolar central oral fricative"
+         "z": "voiced alveolar central oral fricative",
          }
 
 other = {"ɑ": ("alpha",
@@ -75,6 +75,8 @@ other = {"ɑ": ("alpha",
                "voiced retroflex central oral stop"),
          "ð": ("eth",
                "voiced interdental central oral fricative"),
+         "ᵊ": ("superscript schwa",
+               "superscript schwa"),
          "ə": ("schwa",
                "mid central unrounded vowel"),
          "ɚ": ("schwar",
@@ -203,6 +205,7 @@ diacritics =  {"̃": ("nasalized", "nasalized"),
                "̞": ("lowered", "lowered"),
                "ʰ": ("asiprated", "aspirated"),
                "ʷ": ("labialized", "labialized"),
+               "̩": ("syllabic", "syllabic"),
 }
 postdiacritics = ["́","̀","̂","̌","̄"]
 
